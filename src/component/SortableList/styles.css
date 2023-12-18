@@ -1,0 +1,51 @@
+#sortable_list h1 {
+  color: #0d2167;
+  font-family: Poppins;
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin-bottom: 32px;
+}
+
+.board {
+  display: flex;
+  padding: 64px;
+  align-items: flex-start;
+  gap: 64px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0px 44px 64px 0px rgba(37, 99, 235, 0.1);
+}
+
+.types-skills {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+}
+.skill {
+    display: flex;
+width: 392px;
+padding: 16px;
+justify-content: space-between;
+align-items: center;
+border-radius: 8px;
+background: #0D2167;
+color: #FFF;
+text-align: center;
+font-family: Poppins;
+font-size: 18px;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+}
+.suggested-skills {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 16px;
+  
+}
