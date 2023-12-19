@@ -1,10 +1,9 @@
 import React from 'react'
-import SKILLS from '../../dataLayer'
 import './styles.css'
 import SkillsBoard from './SkillsBoard'
 
 const SortableList = () => {
-    console.log(SKILLS)
+    
   return (
     <div id="sortable_list" className='w-screen h-screen bg-light-blue flex items-center justify-center'>
         <div className="container w-2/3 h-2/3 ">

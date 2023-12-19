@@ -13,7 +13,6 @@ const SKILLS = [
     "Stylus",
     "Webpack",
     "Parcel",
-    "Grunt",
     "npm",
     "Yarn",
     "Git",
