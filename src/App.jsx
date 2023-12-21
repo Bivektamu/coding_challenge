@@ -1,10 +1,10 @@
 import './App.css';
-import SortableList from './component/SortableList/SortableList';
+import MultiForm from './component/MultiForm/MultiForm';
 
 function App() {
   return (
     <div className="App">
-      <SortableList />
+      <MultiForm />
     </div>
   );
 }
