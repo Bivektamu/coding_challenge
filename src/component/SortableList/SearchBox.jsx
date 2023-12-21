@@ -1,93 +1,105 @@
-import React, { useState, useEffect } from 'react'
-import {SKILLS, SUGGESTED_SKILLS} from '../../dataLayer'
+import React, { useState, useEffect, useRef } from 'react'
+import { SKILLS, SUGGESTED_SKILLS } from '../../dataLayer'
 import Skill from './Skill'
-const SearchBox = ({updateSuggestedList, lastDeselected, addSkill}) => {
+const SearchBox = ({ updateSelectedSkills, updateSuggestedList, getSelectedSkills, addSkill }) => {
 
     const [selectedSkills, setSelectedSkills] = useState([])
-    const [value, setV] = useState('')
+    const [value, setValue] = useState('')
     const [autoCompleteList, setAutoCompleteList] = useState([])
     const [autoComplete, setAutoComplete] = useState(false)
-    const [optionSelected, setOS] = useState(false)
-    const [allS, setAllSkills] = useState(SKILLS)
+    const [allSkills, setAllSkills] = useState(SKILLS)
+    const inputRef = useRef()
 
 
-    useEffect(()=>{
-        if(addSkill) {
-            console.log(selectedSkills)
-            // const exists = selectedSkills.filter(s=>s===addSkill)
-            setSelectedSkills([...selectedSkills, addSkill])
+    useEffect(() => {
+        document.addEventListener('click', e => allClicksHandler(e))
+
+        return (() => {
+            document.removeEventListener('click', e => allClicksHandler(e))
+        })
+    }, [])
+
+    useEffect(() => {
+        if (updateSelectedSkills) {
+            const {skill, isActive} = updateSelectedSkills
+            if (isActive) {
+                deleteSkill(skill)
+            }
+            else {
+                onClick(skill)
+            }
         }
+        // eslint-disable-next-line
+    }, [updateSelectedSkills])
+
+    useEffect(() => {
+        if (addSkill && selectedSkills.length < 5) {
+
+            setSelectedSkills([...selectedSkills, addSkill])
+            const temp = allSkills.filter(s => s !== addSkill)
+            setAllSkills(temp)
+        }
+        // eslint-disable-next-line
     }, [addSkill])
 
-
-    useEffect(()=>{
-        if(autoComplete) {
-            console.log(autoCompleteList)
-            // const exists = selectedSkills.filter(s=>s===addSkill)
-        }
+    useEffect(() => {
+        getSelectedSkills(selectedSkills)
+        // eslint-disable-next-line
     }, [selectedSkills])
 
-    
 
     useEffect(() => {
 
-        if (value) {
-            const filtered = allS.filter(s => {
-                const index = (s.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()))
-                if (index === 0) {
-                    return (s)
-                }
-            })
+        if (autoComplete) {
+            const filtered = allSkills.filter(s => s.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) === 0)
             setAutoCompleteList(filtered)
         }
         else {
             setAutoCompleteList([])
         }
 
-    }, [value])
+        // eslint-disable-next-line
+    }, [autoComplete, value])
 
-    const selected = (s) => {
+    const onClick = (s) => {
         setSelectedSkills([...selectedSkills, s])
-        setOS(true)
-        setV('')
+        setValue('')
         setAutoCompleteList([])
-        setAutoComplete(false)
-        let temp = allS.filter(sk => sk !== s)
+        let temp = allSkills.filter(sk => sk !== s)
         setAllSkills(temp)
-        const exists = SUGGESTED_SKILLS.filter(sk=>sk===s)
-        if(exists.length > 0) {
+        const exists = SUGGESTED_SKILLS.filter(sk => sk === s)
+        if (exists.length > 0) {
             updateSuggestedList(s)
         }
     }
 
-    const deleteSkill = (s, i) => {
-        console.log(i)
-        let temp = selectedSkills.filter((s, index) => index !== i)
+    const deleteSkill = (s) => {
+        let temp = selectedSkills.filter((skill) => skill !== s)
         setSelectedSkills(temp)
-
-         temp = allS
-         temp.push(s)
+        temp = allSkills
+        temp.push(s)
         setAllSkills(temp)
+    }
 
-        temp = selectedSkills.filter((s, index) => index === i)
-        console.log(temp)
-        lastDeselected(temp[0])
-
+    const allClicksHandler = e => {
+        if (e.target.tagName !== 'INPUT') {
+            setAutoComplete(false)
+        }
     }
 
 
     return (
         <div className="Skills flex-col justify-center items-center gap-[18px] inline-flex">
-            {selectedSkills.length > 0 && selectedSkills.map((s, i) => <Skill key={i} skill={s} index={i} onClickHandler={() => deleteSkill(s,i)} />)}
+            {selectedSkills.length > 0 && selectedSkills.map((s, i) => <Skill key={i} skill={s} index={i} onClickHandler={() => deleteSkill(s)} />)}
             {selectedSkills.length < 5 && (
                 <div className={`FaqFour w-[392px] h-[59px] p-4  rounded-lg border border-slate-200 justify-between items-center inline-flex relative bg-gray-50`}>
-                    <input className={`AddSkill text-slate-500 outline-none w-full bg-transparent  text-lg font-normal capitalize font-['Poppins'] `} placeholder={`${selectedSkills.length + 1}. Add Skill`} value={value} onChange={e => setV(e.target.value)} onFocus={() => setAutoComplete(true)}  />
+                    <input className={`AddSkill text-slate-500 outline-none w-full bg-transparent  text-lg font-normal capitalize font-['Poppins'] `} placeholder={`${selectedSkills.length + 1}. Add Skill`} value={value} onChange={e => setValue(e.target.value)} onFocus={() => setAutoComplete(true)} ref={inputRef} />
 
                     {autoComplete && autoCompleteList.length > 0 && (
                         <div className="FaqFour absolute left-0 top-14 w-[392px] max-h-[250px] overflow-auto z-10  bg-gray-50 rounded-lg border border-slate-200">
                             {autoCompleteList.map((s, i) => (
                                 <div key={i} className="Rectangle1 hover:bg-slate-200 cursor-pointer border-l border-r border-slate-200">
-                                    <p className="Reactjs text-slate-500 text-base font-normal font-['Poppins'] text-left p-2" onClick={() => selected(s)}>{s}</p>
+                                    <p className="Reactjs text-slate-500 text-base font-normal font-['Poppins'] text-left p-2" onClick={() => onClick(s)}>{s}</p>
                                 </div>
                             ))}
                         </div>
