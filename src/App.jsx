@@ -1,9 +1,10 @@
 import './App.css';
+import MultiForm from './component/MultiForm/MultiForm';
 
 function App() {
   return (
     <div className="App">
-      <h1>Coding Challenges</h1>      
+      <MultiForm />
     </div>
   );
 }
