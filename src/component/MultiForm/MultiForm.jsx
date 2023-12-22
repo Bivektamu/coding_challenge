@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react'
 import Step from './Step'
 import PersonalInfoForm from './PersonalInfoForm'
 import SkillForm from './SkillForm'
+import ChallengeForm from './ChallengeForm'
+import ReviewForm from './ReviewForm'
+
 
 const MultiForm = () => {
-    const [step, setStep] = useState(2)
+    const [step, setStep] = useState(3)
     const [errors, setErrors] = useState([])
     const [form, setForm] = useState()
     
@@ -18,15 +21,18 @@ const MultiForm = () => {
         email: '',
         phone: '',
         link: '',
-        skillLevel: ''
+        skillLevel: '',
+        challenge: ''
     })
 
-    const { fullName, email, phone, link, skillLevel } = formData
+    const { fullName, email, phone, link, skillLevel, challenge } = formData
     
     const onChangeHandler = e => {
-        console.log(e.target.name)
+        console.log(e.target.value)
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
+
+    useEffect(()=> {console.log(step)}, [step])
 
     const validationFunc = () => {
 
@@ -92,13 +98,33 @@ const MultiForm = () => {
             errArr.push(err)
         }
 
+        if (step ===2 && !skillLevel) {
+            const err = {
+                errorFor: 'skillLevel',
+                message: 'Please select skill level'
+
+            }
+            errArr.push(err)
+        }
+
+        if (step === 3 && !challenge) {
+            const err = {
+                errorFor: 'challenge',
+                message: 'Please check challenge preferences'
+
+            }
+            errArr.push(err)
+        }
+
         return errArr
     }
 
     const onSubmitHandler = (e) => {
         e.preventDefault()
+        console.log('asdf')
 
         const arr = validationFunc()
+        console.log(arr)
 
         if (arr.length > 0) {
             setErrors(arr)
@@ -112,7 +138,12 @@ const MultiForm = () => {
         if(step < 2)
             setForm( <PersonalInfoForm formData={formData} errors={errors} onChangeHandler={e=>onChangeHandler(e)} onSubmitHandler={(e)=>onSubmitHandler(e)} />)
         else if(step < 3)
-            setForm( <SkillForm formData={formData} errors={errors} onChangeHandler={e=>onChangeHandler(e)} onSubmitHandler={(e)=>onSubmitHandler(e)} />)
+            setForm( <SkillForm formData={formData} errors={errors} step={step} setStep={(step)=>setStep(step)} onChangeHandler={e=>onChangeHandler(e)} onSubmitHandler={(e)=>onSubmitHandler(e)} />)
+        else if(step < 4)
+            setForm( <ChallengeForm formData={formData} errors={errors} step={step} setStep={(step)=>setStep(step)} onChangeHandler={e=>onChangeHandler(e)} onSubmitHandler={(e)=>onSubmitHandler(e)} />)
+        else
+        setForm( <ReviewForm formData={formData} step={step} setStep={(step)=>setStep(step)} onChangeHandler={e=>onChangeHandler(e)} onSubmitHandler={(e)=>onSubmitHandler(e)} />)
+
 
     }, [errors, formData, step])
 
@@ -124,7 +155,6 @@ const MultiForm = () => {
                 <div className='bg-white rounded-2xl shadow p-6'>
                     <Step step={step} />
 
-                   
                     {form && form}
                         {/* {step === 1 && <PersonalInfoForm formData={formData} errors={errors} onChangeHandler={e=>onChangeHandler(e)} onSubmitHandler={(e)=>onSubmitHandler(e)} />}
                         {step === 2 && <PersonalInfoForm formData={formData} errors={errors} onChangeHandler={e=>onChangeHandler(e)} onSubmitHandler={(e)=>onSubmitHandler(e)} />} */}
