@@ -11,6 +11,8 @@ const MultiForm = () => {
     const [errors, setErrors] = useState([])
     const [form, setForm] = useState()
     
+    useEffect(()=> {console.log(step)}, [step])
+
     const getSubmision = (formData) => {
         console.log(formData)
         return false
@@ -28,14 +30,29 @@ const MultiForm = () => {
     const { fullName, email, phone, link, skillLevel, challenge } = formData
     
     const onChangeHandler = e => {
-        console.log(e.target.value)
-        setFormData({ ...formData, [e.target.name]: e.target.value })
-    }
+        if(e.target.type === 'checkbox') {
+            if(e.target.checked) {
+                let arr =[]
+                if(challenge)
+                    arr = challenge.split(',')
+                arr.push(e.target.value)
+                setFormData({ ...formData, [e.target.name]: arr.toString() })
+            }
+            else {
+                const arr = challenge.split(",").filter(c=>c!==e.target.value)
+                setFormData({ ...formData, [e.target.name]: arr.toString() })
 
-    useEffect(()=> {console.log(step)}, [step])
+            }
+        }
+        else {
+            setFormData({ ...formData, [e.target.name]: e.target.value })
+        }
+
+    }
 
     const validationFunc = () => {
 
+        // return true
         let errArr = []
         if (!fullName) {
             const err = {
@@ -135,6 +152,7 @@ const MultiForm = () => {
     }
 
     useEffect(()=> {
+        console.log(step)
         if(step < 2)
             setForm( <PersonalInfoForm formData={formData} errors={errors} onChangeHandler={e=>onChangeHandler(e)} onSubmitHandler={(e)=>onSubmitHandler(e)} />)
         else if(step < 3)
@@ -156,11 +174,7 @@ const MultiForm = () => {
                     <Step step={step} />
 
                     {form && form}
-                        {/* {step === 1 && <PersonalInfoForm formData={formData} errors={errors} onChangeHandler={e=>onChangeHandler(e)} onSubmitHandler={(e)=>onSubmitHandler(e)} />}
-                        {step === 2 && <PersonalInfoForm formData={formData} errors={errors} onChangeHandler={e=>onChangeHandler(e)} onSubmitHandler={(e)=>onSubmitHandler(e)} />} */}
-
-
-                    {/* pb-6 border-b-[1px] border-gray-200 */}
+                       
                 </div>
             </div>
         </div>

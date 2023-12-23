@@ -117,8 +117,10 @@ const SkillForm = ({ formData,  onChangeHandler, errors, onSubmitHandler, setSte
 
 
                 <div className="col-span-2 flex justify-between">
-                    <button className="w-[119px] cursor-pointer h-[41px] px-[26px] py-2.5 bg-red-400 rounded-[10px]   text-center text-white text-sm font-medium font-['Poppins']" onClick={()=>setStep(step-1)} type='submit' >Back</button>
-                    <button className="w-[119px] cursor-pointer h-[41px] px-[26px] py-2.5 bg-red-400 rounded-[10px]   text-center text-white text-sm font-medium font-['Poppins']" type='submit' >Next Step</button>
+                    <input className="w-[119px] cursor-pointer h-[41px] px-[26px] py-2.5 bg-red-400 rounded-[10px]   text-center text-white text-sm font-medium font-['Poppins']" onClick={()=>setStep(step-1)} value='Back' type="button" />
+
+
+                    <input className="w-[119px] cursor-pointer h-[41px] px-[26px] py-2.5 bg-red-400 rounded-[10px]   text-center text-white text-sm font-medium font-['Poppins']" type='submit' value='Next Step' />
                 </div>
             </form>
         </>
