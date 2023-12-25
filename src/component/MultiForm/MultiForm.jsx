@@ -4,14 +4,16 @@ import PersonalInfoForm from './PersonalInfoForm'
 import SkillForm from './SkillForm'
 import ChallengeForm from './ChallengeForm'
 import ReviewForm from './ReviewForm'
+import ThankYou from './ThankYou'
 
 
 const MultiForm = () => {
-    const [step, setStep] = useState(3)
+    const [step, setStep] = useState(1)
     const [errors, setErrors] = useState([])
     const [form, setForm] = useState()
-    
-    useEffect(()=> {console.log(step)}, [step])
+    const [success, setSuccess] = useState(false)
+
+    useEffect(() => { console.log(step) }, [step])
 
     const getSubmision = (formData) => {
         console.log(formData)
@@ -28,18 +30,18 @@ const MultiForm = () => {
     })
 
     const { fullName, email, phone, link, skillLevel, challenge } = formData
-    
+
     const onChangeHandler = e => {
-        if(e.target.type === 'checkbox') {
-            if(e.target.checked) {
-                let arr =[]
-                if(challenge)
+        if (e.target.type === 'checkbox') {
+            if (e.target.checked) {
+                let arr = []
+                if (challenge)
                     arr = challenge.split(',')
                 arr.push(e.target.value)
                 setFormData({ ...formData, [e.target.name]: arr.toString() })
             }
             else {
-                const arr = challenge.split(",").filter(c=>c!==e.target.value)
+                const arr = challenge.split(",").filter(c => c !== e.target.value)
                 setFormData({ ...formData, [e.target.name]: arr.toString() })
 
             }
@@ -115,7 +117,7 @@ const MultiForm = () => {
             errArr.push(err)
         }
 
-        if (step ===2 && !skillLevel) {
+        if (step === 2 && !skillLevel) {
             const err = {
                 errorFor: 'skillLevel',
                 message: 'Please select skill level'
@@ -145,22 +147,30 @@ const MultiForm = () => {
 
         if (arr.length > 0) {
             setErrors(arr)
-        }else {
+        } else {
             setErrors([])
-            setStep(step+1)
+            if (step > 3) {
+                setSuccess(true)
+            }
+            else
+                setStep(step + 1)
         }
     }
 
-    useEffect(()=> {
-        console.log(step)
-        if(step < 2)
-            setForm( <PersonalInfoForm formData={formData} errors={errors} onChangeHandler={e=>onChangeHandler(e)} onSubmitHandler={(e)=>onSubmitHandler(e)} />)
-        else if(step < 3)
-            setForm( <SkillForm formData={formData} errors={errors} step={step} setStep={(step)=>setStep(step)} onChangeHandler={e=>onChangeHandler(e)} onSubmitHandler={(e)=>onSubmitHandler(e)} />)
-        else if(step < 4)
-            setForm( <ChallengeForm formData={formData} errors={errors} step={step} setStep={(step)=>setStep(step)} onChangeHandler={e=>onChangeHandler(e)} onSubmitHandler={(e)=>onSubmitHandler(e)} />)
+    useEffect(() => {
+        if (success) {
+            return setForm(
+                <ThankYou />
+            )
+        }
+        if (step < 2)
+            setForm(<PersonalInfoForm formData={formData} errors={errors} onChangeHandler={e => onChangeHandler(e)} onSubmitHandler={(e) => onSubmitHandler(e)} />)
+        else if (step < 3)
+            setForm(<SkillForm formData={formData} errors={errors} step={step} setStep={(step) => setStep(step)} onChangeHandler={e => onChangeHandler(e)} onSubmitHandler={(e) => onSubmitHandler(e)} />)
+        else if (step < 4)
+            setForm(<ChallengeForm formData={formData} errors={errors} step={step} setStep={(step) => setStep(step)} onChangeHandler={e => onChangeHandler(e)} onSubmitHandler={(e) => onSubmitHandler(e)} />)
         else
-        setForm( <ReviewForm formData={formData} step={step} setStep={(step)=>setStep(step)} onChangeHandler={e=>onChangeHandler(e)} onSubmitHandler={(e)=>onSubmitHandler(e)} />)
+            setForm(<ReviewForm formData={formData} step={step} setStep={(step) => setStep(step)} onChangeHandler={e => onChangeHandler(e)} onSubmitHandler={(e) => onSubmitHandler(e)} />)
 
 
     }, [errors, formData, step])
@@ -171,10 +181,10 @@ const MultiForm = () => {
                 <h1 className="mb-2 text-gray-900 text-[32px] font-black font-['Merriweather']">Join our Community of Developers</h1>
                 <p className="mb-8 text-center text-gray-900 text-lg font-normal font-['Poppins']">To join our community and participate in frontend challenges.<br />Please fill out the following form.</p>
                 <div className='bg-white rounded-2xl shadow p-6'>
-                    <Step step={step} />
+                    {!success && <Step step={step} />}
 
                     {form && form}
-                       
+
                 </div>
             </div>
         </div>

@@ -1,4 +1,4 @@
-const SkillForm = ({ formData,  onChangeHandler, errors, onSubmitHandler, setStep, step }) => {
+const SkillForm = ({ formData, onChangeHandler, errors, onSubmitHandler, setStep, step }) => {
     const { skillLevel } = formData
 
     return (
@@ -6,7 +6,7 @@ const SkillForm = ({ formData,  onChangeHandler, errors, onSubmitHandler, setSte
             <h2 className=" text-gray-900 text-2xl mb-2 font-medium font-['Poppins'] text-left">Skill Level</h2>
             <p className="mb-8  text-gray-500 text-sm text-left font-normal font-['Poppins']">Please tell us about your skill level in frontend development.</p>
 
-            <form id="skill_level_form" action="" onSubmit={e => onSubmitHandler(e)} className='text-left grid-cols-2 grid gap-x-10 gap-y-5 pb-8 border-b-[1px] border-gray-200 mb-8'>
+            <form id="skill_level_form" action="" onSubmit={e => onSubmitHandler(e)} className='text-left grid-cols-2 grid gap-x-10 gap-y-5  mb-8'>
                 <div className="flex flex-row w-full items-start">
                     <div className={`border-solid border-[#d1d5db] flex flex-row gap-4 w-full h-16 font-['Poppins'] items-start pt-4 px-4 border rounded-lg relative ${skillLevel === 'beginner' && 'border-red-400'} `}>
 
@@ -116,8 +116,9 @@ const SkillForm = ({ formData,  onChangeHandler, errors, onSubmitHandler, setSte
 
 
 
-                <div className="col-span-2 flex justify-between">
-                    <input className="w-[119px] cursor-pointer h-[41px] px-[26px] py-2.5 bg-red-400 rounded-[10px]   text-center text-white text-sm font-medium font-['Poppins']" onClick={()=>setStep(step-1)} value='Back' type="button" />
+                <div className="col-span-2 flex justify-between pt-8 border-t-[1px] border-gray-200 mt-4">
+                    <input className="w-[119px] cursor-pointer h-[41px] px-[26px] py-2.5 border-red-400 border-[1px] rounded-[10px] text-center text-red-400 text-sm font-medium font-['Poppins']" onClick={() => setStep(step - 1)} value='Back' type="button" />
+
 
 
                     <input className="w-[119px] cursor-pointer h-[41px] px-[26px] py-2.5 bg-red-400 rounded-[10px]   text-center text-white text-sm font-medium font-['Poppins']" type='submit' value='Next Step' />
