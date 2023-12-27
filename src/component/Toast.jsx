@@ -1,4 +1,4 @@
-import React, {  useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Notification from './Notification'
 
 const Toast = () => {
@@ -10,20 +10,32 @@ const Toast = () => {
     const [notArr, setNotArr] = useState([])
 
 
-
-    useEffect(()=> {
-        console.log(notArr)
-    }, [notArr])
-
     const onClickHandler = t => {
-        setNotArr([...notArr, t])
+        const temp  = t + (new Date()).getTime()
+        console.log(temp) 
+        setNotArr([...notArr, {id:temp, value:t}])
     }
 
+    const closeFunc = useCallback((e, id) => {
+        e.preventDefault()
+        console.log(notArr)
+       
+        const filteredArr = notArr.filter(n => n.id !== id)
+
+        setNotArr(filteredArr)
+        return
+
+    }, [notArr]
+    )
 
     return (
         <div className="bg-slate-100 flex flex-col items-center pl-20 pr-8 pt-7 pb-12 max-md:px-5">
-            {notArr.length > 0 && <Notification allNots={notArr}  />}
-
+            {notArr.length > 0 && (
+                <div className='self-end gap-y-3 flex flex-col'>
+                    {notArr.map((n, i) => <Notification key={n.id} n={n}  closeFunc={(e, id) => closeFunc(e, id)} />)}
+                </div>
+            )
+            }
             <div className="shadow-sm bg-white gap-y-9 flex w-[512px] max-w-full flex-col items-stretch mt-16 mb-40 px-9 py-12 rounded-lg max-md:my-10 max-md:px-5">
 
                 {toast.length > 0 && toast.map((t, i) => {
