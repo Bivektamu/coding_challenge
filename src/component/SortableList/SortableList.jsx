@@ -9,7 +9,6 @@ const SortableList = () => {
         <div className="container w-2/3 h-2/3 ">
             <h1 className='blue'>Select your top 5 tech skills</h1>
             <SkillsBoard />
-            
         </div>
     </div>
   )
