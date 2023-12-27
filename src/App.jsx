@@ -1,10 +1,10 @@
 import './App.css';
-import MultiForm from './component/MultiForm/MultiForm';
+import Toast from './component/Toast';
 
 function App() {
   return (
     <div className="App">
-      <MultiForm />
+      <Toast />
     </div>
   );
 }
