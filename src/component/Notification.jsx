@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 
 const Notification = ({ n, closeFunc }) => {
 
-    const [cs, setCs] = useState(' duration-0')
+    const [cs, setCs] = useState('w-full duration-0')
     const [csName, setCsname] = useState('')
     const [svg, setSvg] = useState()
     const ref = useRef(null)
@@ -69,16 +69,16 @@ const Notification = ({ n, closeFunc }) => {
 
 
     return (
-        <div className='self-end' >
-            <div className={`border-b-${csName}-500 shadow-lg relative bg-white flex w-[439px] max-w-full items-stretch justify-between gap-5 px-4 py-7 rounded-lg  self-end max-md:flex-wrap`}>
-                <span className={`absolute bottom-0 bg-${csName}-500  transition-width w-full ${cs}  left-0 h-1 rounded-md`}></span>
+        <div className='self-end max-w-full' >
+            <div className={`border-b-${csName}-500 shadow-lg relative bg-white flex w-[439px] max-w-full items-stretch justify-between gap-5 px-4 md:py-7 py-4 rounded-lg  self-end max-md:flex-wrap`}>
+                <span className={`absolute bottom-0 bg-${csName}-500  transition-width  ${cs}  left-0 h-1 rounded-md`}></span>
                 <div className="flex items-stretch justify-between gap-5">
                     {svg}
-                    <div className="text-gray-900 text-xl font-medium self-center grow shrink basis-auto my-auto">
+                    <div className="text-gray-900 text-sm md:text-xl font-medium self-center grow shrink basis-auto my-auto">
                         <span className='capitalize'>{n.value}</span> toast notification
                     </div>
                 </div>
-                <a ref={ref} onClick={(e) => closeFunc(e, n.id)} href="">
+                <a ref={ref} onClick={(e) => closeFunc(e, n.id)}  href="" style={{width: '15px', height: '15px'}}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none" className="cursor-pointer aspect-square object-contain object-center w-[15px] fill-indigo-300 overflow-hidden self-center shrink-0 max-w-full my-auto">
                         <path d="M8.82658 7.50016L14.7251 1.60135C15.0916 1.23517 15.0916 0.641039 14.7251 0.274865C14.3587 -0.0916217 13.7652 -0.0916217 13.3987 0.274865L7.50016 6.17367L1.60128 0.274865C1.23481 -0.0916217 0.641325 -0.0916217 0.274854 0.274865C-0.0916179 0.641039 -0.0916179 1.23517 0.274854 1.60135L6.17373 7.50016L0.274854 13.399C-0.0916179 13.7651 -0.0916179 14.3593 0.274854 14.7254C0.458089 14.9084 0.698234 15 0.938067 15C1.1779 15 1.41804 14.9084 1.60128 14.7251L7.50016 8.82633L13.3987 14.7251C13.582 14.9084 13.8221 15 14.0619 15C14.3018 15 14.5419 14.9084 14.7251 14.7251C15.0916 14.359 15.0916 13.7648 14.7251 13.3987L8.82658 7.50016Z" fill="#AEB0D7" />
                     </svg>

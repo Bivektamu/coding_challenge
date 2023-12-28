@@ -29,14 +29,14 @@ const Toast = () => {
     )
 
     return (
-        <div className="bg-slate-100 flex flex-col items-center pl-20 pr-8 pt-7 pb-12 max-md:px-5">
+        <div className="bg-slate-100 flex flex-col  items-center w-full min-h-screen max-md:px-5">
             {notArr.length > 0 && (
-                <div className='self-end gap-y-3 flex flex-col'>
+                <div className='self-end max-w-full gap-y-3 flex flex-col  top-0 right-0'>
                     {notArr.map((n, i) => <Notification key={n.id} n={n}  closeFunc={(e, id) => closeFunc(e, id)} />)}
                 </div>
             )
             }
-            <div className="shadow-sm bg-white gap-y-9 flex w-[512px] max-w-full flex-col items-stretch mt-16 mb-40 px-9 py-12 rounded-lg max-md:my-10 max-md:px-5">
+            <div className="shadow-sm bg-white md:gap-y-9 gap-y-4  flex w-[512px] max-w-full flex-col items-stretch mt-16 mb-40 md:px-9 px-4 md:py-12 py-4 rounded-lg max-md:my-10 max-md:px-5">
 
                 {toast.length > 0 && toast.map((t, i) => {
                     let csName = ''
@@ -58,7 +58,7 @@ const Toast = () => {
                             break;
                     }
                     return (
-                        <div key={i} className={`text-white capitalize cursor-pointer  text-3xl font-semibold whitespace-nowrap shadow-sm  justify-center items-center px-16 py-7 rounded-lg max-md:max-w-full max-md:px-5 ${csName}`} onClick={() => onClickHandler(t)}>
+                        <div key={i} className={`text-white capitalize cursor-pointer  md:text-3xl font-semibold whitespace-nowrap shadow-sm  justify-center items-center md:px-16 py-2 md:py-7 rounded-lg max-md:max-w-full max-md:px-5 ${csName}`} onClick={() => onClickHandler(t)}>
                             {t}
                         </div>
                     )
