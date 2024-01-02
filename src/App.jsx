@@ -1,9 +1,9 @@
 import './App.css';
-import Otp from './component/Otp'
+import MultiSearch from './component/MultiSearch'
 function App() {
   return (
     <div className="App">
-      <Otp />
+      <MultiSearch />
     </div>
   );
 }
