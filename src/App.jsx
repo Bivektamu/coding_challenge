@@ -1,9 +1,9 @@
 import './App.css';
-import MultiSearch from './component/MultiSearch'
+import Calendar from './component/Calendar'
 function App() {
   return (
     <div className="App">
-      <MultiSearch />
+      <Calendar />
     </div>
   );
 }
