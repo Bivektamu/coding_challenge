@@ -6,8 +6,8 @@ const MultiSearch = (props) => {
     const [timer, setTimer] = useState()
     const [dropDownList, setDropDownList] = useState([])
 
-    useEffect(()=> {
-        if(!data || data === '') {
+    useEffect(() => {
+        if (!data || data === '') {
             setDropDownList([])
         }
     }, [data])
@@ -37,16 +37,16 @@ const MultiSearch = (props) => {
                 console.log(e)
             })
         let filter = (res.filter(r => ((r.firstname).toLowerCase()).indexOf(args) === 0)).map(r => r.firstname)
-        if(searchedList.length > 0) {
+        if (searchedList.length > 0) {
             console.log(filter)
 
-             filter = filter.filter(f=>!searchedList.includes(f))
+            filter = filter.filter(f => !searchedList.includes(f))
         }
 
         setDropDownList(filter)
     }
 
-    const debounceData = debounce(getData, 1000)
+    const debounceData = debounce(getData, 500)
 
     const onChangeHandler = e => {
         setData((e.target.value).toLowerCase())
@@ -59,53 +59,50 @@ const MultiSearch = (props) => {
         setData('')
         setDropDownList('')
     }
-
-
     return (
         <div className="bg-indigo-50 items-center justify-center flex px-16 py-12 w-full min-h-screen">
-            <form className="items-center  flex flex-col justify-center  max-md:px-5">
+            <div className="items-center  flex flex-col justify-center  max-md:px-5">
                 <div className="flex w-[601px] max-w-full flex-col items-stretch mt-72 mb-56 max-md:my-10">
                     <div className="justify-start items-stretch rounded border bg-white flex gap-5 gap-x-5 px-3.5 py-3 border-solid border-slate-900 max-md:max-w-full max-md:flex-wrap">
-                        {searchedList.length > 0 && searchedList.map(s => <p className="justify-start items-center rounded bg-indigo-50 flex w-20 gap-1 px-2 py-0.5">
+                        {searchedList.length > 0 && searchedList.map((s, i) => <p key={i} className="justify-start items-center rounded bg-indigo-50 flex  gap-2 px-2 py-0.5">
                             <span className="text-slate-900 text-center uppercase text-xs font-semibold leading-5 grow whitespace-nowrap">
                                 {s}
                             </span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none" className="w-4   max-w-full ">
-                                <g clip-path="url(#clip0_14_71)">
-                                    <path d="M12.5 4.5L4.5 12.5" stroke="#11103C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M4.5 4.5L12.5 12.5" stroke="#11103C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <svg onClick={() => setSearchedList([...searchedList.filter(e => e !== s)])} xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none" className="w-4 cursor-pointer max-w-full ">
+                                <g clipPath="url(#clip0_14_71)">
+                                    <path d="M12.5 4.5L4.5 12.5" stroke="#11103C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path d="M4.5 4.5L12.5 12.5" stroke="#11103C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                 </g>
                                 <defs>
                                     <clipPath id="clip0_14_71">
-                                    <rect width="16" height="16" fill="white" transform="translate(0.5 0.5)"/>
+                                        <rect width="16" height="16" fill="white" transform="translate(0.5 0.5)" />
                                     </clipPath>
                                 </defs>
                             </svg>
                         </p>)}
-                        {searchedList.length < 5 ? 
-                        <input className="grow text-slate-900 text-base font-medium leading-6 background-transparent" placeholder="Add upto 5 skills" value={data} onChange={e => onChangeHandler(e)} /> : <a href="" className="ml-auto">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none" className="w-4   max-w-full ">
-                                <g clip-path="url(#clip0_14_71)">
-                                    <path d="M12.5 4.5L4.5 12.5" stroke="#11103C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M4.5 4.5L12.5 12.5" stroke="#11103C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        {searchedList.length < 5 ?
+                            <input className="grow text-slate-900 text-base font-medium leading-6 background-transparent" placeholder="Add upto 5 skills" value={data} onChange={e => onChangeHandler(e)} /> :
+                            <svg onClick={()=>setSearchedList([])} xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none" className="w-4  ml-auto max-w-full ">
+                                <g clipPath="url(#clip0_14_71)">
+                                    <path d="M12.5 4.5L4.5 12.5" stroke="#11103C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path d="M4.5 4.5L12.5 12.5" stroke="#11103C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                 </g>
                                 <defs>
                                     <clipPath id="clip0_14_71">
-                                    <rect width="16" height="16" fill="white" transform="translate(0.5 0.5)"/>
+                                        <rect width="16" height="16" fill="white" transform="translate(0.5 0.5)" />
                                     </clipPath>
                                 </defs>
                             </svg>
-                        </a>
-                    }
+                        }
                     </div>
 
                     {dropDownList.length > 0 &&
                         <div className="justify-between items-stretch rounded border shadow-sm bg-white flex flex-col mt-4 p-3 border-solid border-slate-900 max-md:max-w-full text-left">
-                            {dropDownList.map(d => <p onClick={() => onClickandler(d)} className="text-slate-900 text-base font-medium leading-6 whitespace-nowrap rounded hover:bg-indigo-50 justify-center pl-3 pr-16 py-4 items-start max-md:max-w-full max-md:pr-5"> {d} </p>)}
+                            {dropDownList.map((d, i) => <p key={i}  onClick={() => onClickandler(d)} className="text-slate-900 text-base font-medium leading-6 whitespace-nowrap rounded hover:bg-indigo-50 justify-center pl-3 pr-16 py-4 items-start max-md:max-w-full max-md:pr-5"> {d} </p>)}
                         </div>
                     }
                 </div>
-            </form>
+            </div>
         </div>
     );
 }
