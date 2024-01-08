@@ -23,8 +23,8 @@ const Calendar = () => {
         }
     }, [month, year])
 
-    useEffect(()=> {
-        if(calendar.length > 0) {
+    useEffect(() => {
+        if (calendar.length > 0) {
             // console.log(calendar)
         }
     }, [calendar])
@@ -88,8 +88,8 @@ const Calendar = () => {
 
     const nextClickHandler = () => {
         setMonth((prev) => {
-            
-            if(prev === 11) {
+
+            if (prev === 11) {
                 setYear((prev) => {
                     return prev + 1
                 })
@@ -101,7 +101,7 @@ const Calendar = () => {
 
     const prevClickHandler = () => {
         setMonth((prev) => {
-            if(prev === 0) {
+            if (prev === 0) {
                 setYear((prev) => {
                     return prev - 1
                 })
@@ -112,31 +112,42 @@ const Calendar = () => {
     }
 
     return (
-        <div className='calendar '>
-            <div className="flex items-center justify-between">
-                <span>{monthToString(month)} {year}</span>
-                <div className='flex justify-start gap-x-10'>
-                    <span onClick={() => prevClickHandler()}>Prev</span>
-                    <span onClick={() => nextClickHandler()}>Next</span>
+        <div className='calendar  bg-violet-50 h-screen flex  justify-center items-center'>
+            <div className="max-w-[669px] w-full bg-gradient-to-br from-white to-violet-50 rounded-[20px] shadow px-6 py-10 pr-4" >
+                <div className="flex items-center justify-between mb-10">
+                    <h2 className='text-gray-800 text-4xl font-bold'>{monthToString(month)} {year}</h2>
+                    <div className='flex justify-start '>
+                        <span className='cursor-pointer' onClick={() => prevClickHandler()}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44" fill="none">
+                                <path d="M27.5 33L16.5 22L27.5 11" stroke="#202842" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                        <span className='cursor-pointer' onClick={() => nextClickHandler()}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44" fill="none">
+                                <path d="M16.5 11L27.5 22L16.5 33" stroke="#202842" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                    </div>
                 </div>
-            </div>
-            <div className="grid grid-cols-7 gap-y-10">
-                {SEVEN_DAYS.length > 0 && SEVEN_DAYS.map((c, i) => {
-                    return <span key={i}>{c}</span>
-                })}
-                {calendar.length > 0 && calendar.map((c, i) => {
-                    let clas = ''
-
-                    if (DATE.getFullYear() === c.y && DATE.getMonth() === c.m && DATE.getDate() === c.d) {
-                        clas+="bg-black text-white"
-                    }
-                    else if(year !== c.y || month !== c.m) {
-                        clas+="text-red-500"
-                    }
+                <div className="grid grid-cols-7 gap-y-10">
+                    {SEVEN_DAYS.length > 0 && SEVEN_DAYS.map((c, i) => {
+                        return <span className='text-gray-800 text-lg font-bold' key={i}>{c}</span>
+                    })}
+                    {calendar.length > 0 && calendar.map((c, i) => {
+                        let clas = "text-slate-900"
 
 
-                    return <span className={`hover:bg-black hover:text-white ${clas && clas}`} key={i}>{c.d}</span>
-                })}
+                        if (DATE.getFullYear() === c.y && DATE.getMonth() === c.m && DATE.getDate() === c.d) {
+                            clas = "text-white bg-violet-600 rounded-full text-white"
+                        }
+                        else if (year !== c.y || month !== c.m) {
+                            clas += "text-slate-900 opacity-40"
+                        }
+
+
+                        return <span className={`hover:bg-black hover:text-white font-normal  text-center ${clas && clas}`} key={i}>{c.d}</span>
+                    })}
+                </div>
             </div>
         </div>
     )
