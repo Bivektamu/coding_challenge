@@ -5,6 +5,9 @@ import UserList from './component/UserList'
 function App() {
   const [userData, setUserData] = useState([])
   const [typedName, setTypedName] = useState('')
+  const [page, setPage] = useState(1)
+  const [pageList, setPageList] = useState([])
+  const PER_PAGE = 6
 
 
   useEffect(() => {
@@ -14,30 +17,64 @@ function App() {
           throw new Error('Network eroor')
         }
         return res.json()
-      }).then(users => {
-        if (users) {
-          let name = users.map(user => user.firstname +' '+ user.lastname)
-          if(typedName.length > 0) {
-            name = name.filter(n=> n.indexOf(typedName) > -1)
-            console.log(name)
+      }).then(data => {
+        if (data) {
+          let users = data.map(user => {
+            return {
+              id: user.id,
+              name: user.firstname + ' ' + user.lastname,
+              email:user.email
+            }
+          })
+          console.log(users)
+          if (typedName.length > 0) {
+            users = users.filter(n =>  n.name.toLowerCase().indexOf(typedName.toLowerCase()) === 0  )
+            console.log(users)
           }
 
-          setUserData(name)
+          setUserData([...users])
         }
       })
 
     }
     fetchUsers()
+
   }, [typedName])
 
-  const typedNameFunc = name=> {
+
+  useEffect(() => {
+    createPage()
+  }, [userData])
+
+
+  useEffect(() => {
+    createPage()
+
+  }, [page])
+
+  function createPage() {
+    const firstIndex = page * PER_PAGE - PER_PAGE
+    const lastIndex = firstIndex + PER_PAGE
+    const slicedData = userData.slice(firstIndex, lastIndex)
+    setPageList(slicedData)
+  }
+
+  const typedNameFunc = name => {
     console.log(name)
     setTypedName(name)
   }
   return (
     <div className="App">
-      <UserFilter typedName={name=>typedNameFunc(name)} />
-      <UserList list={userData} />
+      <UserFilter typedName={name => typedNameFunc(name)} />
+      <UserList list={pageList} />
+      {userData.length > PER_PAGE && <div>
+        {
+          Array(Math.ceil(userData.length / PER_PAGE))
+            .fill('')
+            .map((_, i) => <span onClick={e => setPage(e.target.innerHTML)} className={`cursor-pointer ${parseInt(page) === (i + 1) ? 'text-red-500' : 'text-black'}`}>{i + 1}</span>)
+
+        }
+      </div>}
     </div>
   );
 }
