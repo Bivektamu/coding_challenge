@@ -5,8 +5,14 @@ import Kanban from './component/Kanban';
 function App() {
 
   const [tasks, setTasks] = useState([])
+  useEffect(() => {
+    if (localStorage.getItem('tasks')) {
+      const tasksStorage = JSON.parse(localStorage.getItem('tasks'))
+      setTasks([...tasksStorage])
+    }
+  }, [])
   return (
-    <TaskContext.Provider value={{tasks, setTasks}}>
+    <TaskContext.Provider value={{ tasks, setTasks }}>
       <div className="App">
         <Kanban />
       </div>
