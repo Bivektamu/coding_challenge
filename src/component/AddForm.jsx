@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react'
-import TaskContext from '../context'
+import React, { useEffect, useState } from 'react'
+import { useTaskContext } from '../context'
 
 const AddForm = ({ setAddBtn }) => {
-    const { tasks, setTasks } = useContext(TaskContext)
-    const minDate = ((new Date()).getFullYear() + '-' + (new Date()).getMonth() + '-' + ((new Date()).getDate() + 1))
-
+    const [{ tasks }, dispatch] = useTaskContext()
+    const [errorsUI, setErrorsUI] = useState([])
+    const [showError, setShowError] = useState(false)
 
     const [formData, setFormData] = useState({
         id: '',
@@ -15,7 +15,6 @@ const AddForm = ({ setAddBtn }) => {
         status: ''
     })
 
-    const [errors, setErrors] = useState([])
     const { title, desc, assignee, due, status } = formData
 
 
@@ -24,61 +23,99 @@ const AddForm = ({ setAddBtn }) => {
             setFormData({ ...formData, id: `${status.slice(0, 1)}_${(new Date()).getTime()}` })
     }, [status])
 
+    useEffect(() => {
+        let temp = []
+        Object.entries(formData).forEach(([key, value]) => {
+            if(key !== 'id')
+                temp = [...temp, { [key]: `Please add ${key}` }] 
+        })
+        setErrorsUI(temp)
+    }, [])
 
     const submitHandler = e => {
         e.preventDefault()
+        if(!showError)
+            setShowError(true)
 
-        let newErrors = []
-        if (title === '') newErrors.push('Please add title')
-        if (desc === '') newErrors.push('Please add description')
-        if (assignee === '') newErrors.push('Please add assignee')
-        if (due === '') {
-            newErrors.push('Please set due date')
+        if(errorsUI.length > 0) {
+            return
         }
-        else {
-            const currDate = new Date()
-            const inputDateArr = due.split('-')
-            const selectedDate = new Date(inputDateArr[0], inputDateArr[1] - 1, inputDateArr[2])
-            if (selectedDate.getTime() < currDate.getTime()) {
-                newErrors.push('Please select valid date')
-            }
-        }
-        if (status === '') newErrors.push('Please set status')
-
-        if (newErrors.length > 0) {
-            return setErrors([...newErrors])
-        }
-        const findIfTitleExists = tasks.filter(t => t.title === title)
-        if (findIfTitleExists.length > 0) {
-            return setErrors(['Task already exists'])
-        }
-        localStorage.setItem('tasks', JSON.stringify([...tasks, formData]))
-        setTasks([...tasks, formData])
-        setErrors([])
+        dispatch({
+            type: 'ADD',
+            payload: formData
+        })
+        dispatch({ type: 'SET' })
         setAddBtn(false)
     }
 
+    const handleInputChange = e => {
+        if (e.target.value === '') {
+            setErrorsUI([...errorsUI.filter(er=>!er[e.target.name]), {[e.target.name]: `Please add ${e.target.name}`}] )
+        }
+
+        else if (e.target.name === 'title' && e.target.value !== '') {
+            const findIfTitleExists = tasks.filter(t => t.title === e.target.value)
+            if (findIfTitleExists.length > 0) {
+                setErrorsUI([...errorsUI.filter(ele=>!ele[e.target.name]), {title: 'Title already exists'}])
+            }
+            else {
+                setErrorsUI([...errorsUI.filter(ele=>!ele[e.target.name])])
+            }
+        }
+        else if (e.target.name === 'due' && e.target.value !== '') {
+            console.log()
+            const currDate = new Date()
+            const inputDateArr = e.target.value.split('-')
+            const selectedDate = new Date(inputDateArr[0], inputDateArr[1] - 1, inputDateArr[2])
+            if (selectedDate.getTime() < currDate.getTime()) {
+                setErrorsUI([...errorsUI.filter(ele=>!ele.due), {due: 'Please select valid date'}])
+            }
+            else {
+                setErrorsUI([...errorsUI.filter(ele=>!ele[e.target.name])])
+            }
+        }
+        else {
+            setErrorsUI([...errorsUI.filter(ele=>!ele[e.target.name])])
+        }
+
+        setFormData({ ...formData, [e.target.name]: e.target.value })
+
+
+    }
 
     return (
         <>
-            {errors.length > 0 && <div className='fixed top-6 right-6 flex flex-col text-left z-10 gap-y-4'>
-                {errors.map((e, i) => <span key={i} className='text-red-400 px-4 py-2 bg-white '>{e}</span>)}
-            </div>}
 
             <div className='w-screen h-screen fixed bg-black/50 flex items-center justify-center'>
                 <span className='absolute top-10 text-white text-4xl cursor-pointer' onClick={() => setAddBtn(false)}>x</span>
 
                 <form className='flex flex-col gap-y-6' onSubmit={e => submitHandler(e)}>
-                    <input type="text" name='title' value={title} placeholder='Title' className='py-2 px-4' onChange={e => setFormData({ ...formData, title: e.target.value })} />
-                    <input type="text" name='desc' value={desc} placeholder='Decription' className='py-2 px-4' onChange={e => setFormData({ ...formData, desc: e.target.value })} />
-                    <input type="text" name='assignee' value={assignee} placeholder='Assignee' className='py-2 px-4' onChange={e => setFormData({ ...formData, assignee: e.target.value })} />
-                    <input type="date" name='due' value={due} placeholder='Due Date' className='py-2 px-4' onChange={e => setFormData({ ...formData, due: e.target.value })} />
-                    <select name="status" id="" onChange={e => setFormData({ ...formData, status: e.target.value })}>
-                        <option value="">Status</option>
-                        <option value="toDo">To Do</option>
-                        <option value="inProgress">In Progress</option>
-                        <option value="done">Done</option>
-                    </select>
+                    <div className='relative'>
+                        <input type="text" name='title' value={title} placeholder='Title' className='py-2 px-4 w-full' onChange={e => handleInputChange(e)} />
+                        {showError && errorsUI.filter(e=>e.title).length > 0 && <span className='text-red-400 block mt-2 text-left text-xs'>{errorsUI.filter(e=>e.title)[0].title}</span>}
+                    </div>
+                    <div className='relative'>
+                        <input type="text" name='desc' value={desc} placeholder='Decription' className='py-2 px-4 w-full' onChange={e => handleInputChange(e)} />
+                        {showError && errorsUI.filter(e=>e.desc).length > 0 && <span className='text-red-400 block mt-2 text-left text-xs'>{errorsUI.filter(e=>e.desc)[0].desc}</span>}
+                    </div>
+                    <div className='relative'>
+                        <input type="text" name='assignee' value={assignee} placeholder='Assignee' className='py-2 px-4 w-full' onChange={e => handleInputChange(e)} />
+                        {showError && errorsUI.filter(e=>e.assignee).length > 0 && <span className='text-red-400 block mt-2 text-left text-xs'>{errorsUI.filter(e=>e.assignee)[0].assignee}</span>}
+                    </div>
+                    <div className='relative'>
+                        <input type="date" name='due' value={due} placeholder='Due Date' className='py-2 px-4 w-full' onChange={e => handleInputChange(e)} />
+                        {showError && errorsUI.filter(e=>e.due).length > 0 && <span className='text-red-400 block mt-2 text-left text-xs'>{errorsUI.filter(e=>e.due)[0].due}</span>}
+                    </div>
+                    <div className='relative'>
+                        <select name="status" id="" className='py-2 px-4 w-full' onChange={e => handleInputChange(e)}>
+                            <option value="">Status</option>
+                            <option value="toDo">To Do</option>
+                            <option value="inProgress">In Progress</option>
+                            <option value="done">Done</option>
+                        </select>
+
+                        {showError && errorsUI.filter(e=>e.status).length > 0 && <span className='text-red-400 block mt-2 text-left text-xs'>{errorsUI.filter(e=>e.status)[0].status}</span>}
+                    </div>
                     <button className='bg-blue-500 text-white rounded-md px-4 py-2'>Submit</button>
                 </form>
             </div>

@@ -1,14 +1,15 @@
 import React, { useState, useContext, useEffect } from 'react'
 import AddForm from './AddForm'
-import EditForm from './EditForm'
-import TaskContext from '../context'
+// import EditForm from './EditForm'
+import {useTaskContext} from '../context'
 
 const Kanban = () => {
     const [addBtn, setAddBtn] = useState(false)
     const [editBtn, setEditBtn] = useState(false)
     const [taskId, setTaskId] = useState()
-    const { tasks, setTasks } = useContext(TaskContext)
+    const [state, dispatch] = useTaskContext()
     const [taskList, setTaskList] = useState({ toDo: [], inProgress: [], done: [] })
+    const {tasks} = state
 
 
     useEffect(() => {
@@ -21,19 +22,23 @@ const Kanban = () => {
             })
             setTaskList({ toDo, inProgress, done })
         }
+        
     }, [tasks])
 
 
     const deleteHandler = id => {
+        dispatch({
+            type:'DELETE',
+            payload: id
+          })
+        return
         const newTasks = tasks.filter(task => task.id !== id)
         if (newTasks.length > 0) {
             localStorage.setItem('tasks', JSON.stringify([...newTasks]))
-            setTasks([...newTasks])
         }
         else {
             console.log(newTasks)
             localStorage.setItem('tasks', '')
-            setTasks([])
         }
     }
     const editHandler = t => {
@@ -45,7 +50,7 @@ const Kanban = () => {
     return (
         <>
             {addBtn && <AddForm setAddBtn={(isClicked) => setAddBtn(isClicked)} />}
-            {editBtn && <EditForm taskId={taskId} setEditBtn={(isClicked) => setEditBtn(isClicked)} />}
+            {/* {editBtn && <EditForm taskId={taskId} setEditBtn={(isClicked) => setEditBtn(isClicked)} />} */}
 
             <div className='max-w-[500px] mx-auto flex items-center justify-center py-10'>
                 <div>
