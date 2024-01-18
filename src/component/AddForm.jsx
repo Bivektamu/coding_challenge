@@ -77,16 +77,13 @@ const AddForm = ({ setAddBtn }) => {
         else {
             setErrorsUI([...errorsUI.filter(ele=>!ele[e.target.name])])
         }
-
         setFormData({ ...formData, [e.target.name]: e.target.value })
-
-
     }
 
     return (
         <>
 
-            <div className='w-screen h-screen fixed bg-black/50 flex items-center justify-center'>
+            <div className='w-screen h-screen fixed bg-black/50 flex items-center z-20 justify-center'>
                 <span className='absolute top-10 text-white text-4xl cursor-pointer' onClick={() => setAddBtn(false)}>x</span>
 
                 <form className='flex flex-col gap-y-6' onSubmit={e => submitHandler(e)}>

@@ -6,7 +6,6 @@ const TaskContext = createContext();
 export const useTaskContext = () => useContext(TaskContext);
 const initialState = {
   tasks: [],
-  errors: {}
 };
 
 export const TaskProvider = ({ children }) => {

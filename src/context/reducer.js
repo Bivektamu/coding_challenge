@@ -29,6 +29,12 @@ const reducer = (state, action) => {
         tasks: [...state.tasks.filter((task) => task.id !== action.payload)],
       };
 
+      case 'DND':
+        return {
+          ...state, 
+          tasks: [...state.tasks.filter(t=>t.id !== action.payload.id), action.payload]
+        }
+
     default:
       console.log("Nothing done");
       return state;
