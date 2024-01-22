@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import AddForm from './AddForm'
 import EditForm from './EditForm'
 import { useTaskContext } from '../context'
@@ -10,30 +10,34 @@ const Kanban = () => {
     const [state, dispatch] = useTaskContext()
     const [taskList, setTaskList] = useState({ toDo: [], inProgress: [], done: [] })
     const { tasks } = state
-    const dndRefs = useRef([])
-    const [cords, setCords] = useState({ x: 0, y: 0 })
-    const [draggedTask, setDraggedTask] = useState({ ...cords, task: {} })
-    const [isDragged, setDragged] = useState(false)
-    const [activeCol, setActiveCol] = useState()
+    const [dragState, setDragState] = useState({
+        cords: { x: 0, y: 0 },
+        draggedTask: {x:0, y:0, task:{}},
+        isDragged: false,
+        activeCol: ''
+    })
 
     useEffect(() => {
+        
+    }, [tasks])
+
+    const memoizedTasks = useMemo(()=> {
         if (tasks) {
             let tempTaskList = { toDo: [], inProgress: [], done: [] }
-            tasks.map(t => {
+            tasks.map(t => 
                 tempTaskList = { ...tempTaskList, [t.status]: [...(tempTaskList[t.status] || []), t] }
-            })
-            console.log(tempTaskList)
-            setTaskList(tempTaskList)
+            )
+            return tempTaskList
         }
     }, [tasks])
 
-    useEffect(() => {
-        console.log(taskList)
-    }, [taskList])
+    useEffect(()=> {
+        setTaskList(memoizedTasks)
+
+    }, [memoizedTasks])
 
     const deleteHandler = (e, id) => {
         e.stopPropagation()
-        console.log('delete')
         dispatch({
             type: 'DELETE',
             payload: id
@@ -47,26 +51,24 @@ const Kanban = () => {
         setEditBtn(true)
     }
 
+    const {activeCol, draggedTask, isDragged, cords} = dragState
+
     const dragStop = e => {
-        setCords({ ...cords, x: e.clientX, y: e.clientY })
-        setDragged(false)
+        setDragState(prevState=>({...prevState, cords: {x: e.clientX, y: e.clientY}, isDragged: false}))
         if (activeCol === '') {
-            return setDraggedTask({ ...draggedTask, task: {} })
+            return setDragState(prevState => ({...prevState, draggedTask: {...draggedTask, task: {}}}))
 
         }
         if (activeCol === draggedTask.task.status) {
-            setDraggedTask({ ...draggedTask, task: {} })
-            return setActiveCol('')
+            return setDragState(prevState => ({...prevState, activeCol: '', draggedTask: {...draggedTask, task: {}}}))
         }
-        console.log(draggedTask.task, activeCol)
-        const newTask = draggedTask.task
+        const newTask = {...draggedTask.task}
         newTask.status = activeCol
         dispatch({
             type: 'DND',
             payload: newTask
         })
-        setActiveCol('')
-        setDraggedTask({ ...draggedTask, task: {} })
+        setDragState(prevState => ({...prevState, activeCol: '', draggedTask: {...draggedTask, task: {}}}))
         dispatch({
             type: 'SET'
         })
@@ -77,35 +79,35 @@ const Kanban = () => {
             return
         }
         const kanban = document.getElementById('kanban-board').getBoundingClientRect()
+        let tempCol = activeCol
 
         if (e.clientX > kanban.right || e.clientX < kanban.left || e.clientY < kanban.top || e.clientY > kanban.bottom) {
-            setActiveCol('')
+            tempCol = ''
             // return dragStop(e)
         }
 
         else if (e.clientX < kanban.left + kanban.width / 3) {
-            setActiveCol('toDo')
+            tempCol = 'toDo'
         }
         else if (e.clientX < kanban.right - kanban.width / 3) {
-            setActiveCol('inProgress')
+            tempCol = 'inProgress'
         }
         else {
-            setActiveCol('done')
+            tempCol = 'done'
         }
 
         const diff = { x: e.clientX - cords.x, y: e.clientY - cords.y }
-        setCords({ ...cords, x: e.clientX, y: e.clientY })
-        setDraggedTask({ ...draggedTask, x: draggedTask.x + diff.x, y: draggedTask.y + diff.y })
+        const newCords = {x: e.clientX, y: e.clientY}
+        const newDraggedTask = ({ ...draggedTask, x: draggedTask.x + diff.x, y: draggedTask.y + diff.y })
+        setDragState({...dragState, cords: newCords, activeCol: tempCol, draggedTask: newDraggedTask})
+        
     }
 
     const startDrag = (e, task) => {
-        setDraggedTask({ ...draggedTask, x: (e.currentTarget.parentElement).getBoundingClientRect().left, y: (e.currentTarget.parentElement).getBoundingClientRect().top, task })
-        setCords({ ...cords, x: e.clientX, y: e.clientY })
-        setDragged(true)
+        const newDraggedTask = {  x: (e.currentTarget.parentElement).getBoundingClientRect().left, y: (e.currentTarget.parentElement).getBoundingClientRect().top, task }
+        const newCords = { x: e.clientX, y: e.clientY }
+        setDragState({...draggedTask, draggedTask: newDraggedTask, cords:newCords, isDragged: true})
     }
-
-    console.log('asdf')
-
 
     // return <>asdf</>
     return (
@@ -127,7 +129,7 @@ const Kanban = () => {
                             {isDragged && <span className={`dragEle fixed cursor-pointer text-white w-[180px] h-[35px] px-4 z-20 flex shadow-lg rounded-md items-center text-left ${draggedTask.task.status === 'toDo' && 'bg-blue-500 shadow-blue-500/50'} ${draggedTask.task.status === 'inProgress' && 'bg-yellow-500 shadow-yellow-500/50'} ${draggedTask.task.status === 'done' && 'bg-green-500 shadow-green-500/50'}`} style={{ top: `${draggedTask.y}px`, left: `${draggedTask.x}px` }}>{draggedTask.task.title}</span>}
 
                             {Object.keys(taskList).map(k =>
-                                <div className='border border-black pb-4' ref={e => dndRefs.current[0] = e} >
+                                <div className='border border-black pb-4'>
                                     <h2 className='text-xl font-bold border-b-[1px] border-black p-4'>{k === 'toDo' ? 'To do' : k === 'done' ? 'Done' : 'In Progress'}</h2>
                                     {taskList[k].map((task, i) =>
                                         <div key={i} className={`relative flex justify-between w-[180px] mx-auto group  items-center bg-${k === 'toDo' ? 'blue' : (k === 'done' ? 'green' : 'yellow')}-500 mt-4 h-[35px] rounded-md text-white cursor-pointer px-3 ${draggedTask.task.id === task.id && 'opacity-0'}`}>

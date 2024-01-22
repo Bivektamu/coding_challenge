@@ -19,18 +19,20 @@ const AddForm = ({ setAddBtn }) => {
 
 
     useEffect(() => {
-        if (status)
-            setFormData({ ...formData, id: `${status.slice(0, 1)}_${(new Date()).getTime()}` })
-    }, [status])
-
-    useEffect(() => {
         let temp = []
         Object.entries(formData).forEach(([key, value]) => {
             if(key !== 'id')
                 temp = [...temp, { [key]: `Please add ${key}` }] 
         })
         setErrorsUI(temp)
+        // eslint-disable-next-line
     }, [])
+    useEffect(() => {
+        if (status)
+            setFormData({ ...formData, id: `${status.slice(0, 1)}_${(new Date()).getTime()}` })
+    // eslint-disable-next-line
+        }, [status])
+
 
     const submitHandler = e => {
         e.preventDefault()

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {useTaskContext} from '../context'
 
 const EditForm = ({ setEditBtn, taskId }) => {
@@ -28,10 +28,11 @@ const EditForm = ({ setEditBtn, taskId }) => {
             due: task.due,
             status: task.status
         })
+    // eslint-disable-next-line
     }, [])
 
     
-    const { id, title, desc, assignee, due, status } = formData
+    const {  title, desc, assignee, due, status } = formData
     const submitHandler = e => {
         e.preventDefault()
         if(!showError)
