@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const Debounce = () => {
 
     const [names, setNames] = useState([])
     const [typedName, setTypedName] = useState('')
     const [renderNames, setRenderNames] = useState([])
+    const timeOut = useRef(null)
 
-   
+
     const getUser = async (n) => {
         try {
             const res = await fetch('https://jsonplaceholder.typicode.com/users')
@@ -20,29 +21,17 @@ const Debounce = () => {
         }
     }
 
-    const printFn = () => {
-        console.log('Hello world')
-    }
-
-
-    const debounceFunc = (func, delay) => {
-    let timeOut
-    return (...args) => {
-
-            if (timeOut) {
-                clearTimeout(timeOut)
-            }
-            timeOut = setTimeout(() => {
-                func(...args)
-            }, delay);
+    const debounceData = (typed, callback, timer) => {
+        if(timeOut.current) {
+            clearTimeout(timeOut.current)
+            timeOut.current = null
         }
+        timeOut.current = setTimeout(()=>callback(typed), timer)
     }
 
-    const debounceFetchUser = debounceFunc(printFn, 1000)
-    
     const onChange = e => {
         setTypedName(e.target.value)
-        debounceFetchUser(e.target.value)
+        debounceData(e.target.value, getUser, 300)
     }
 
 
