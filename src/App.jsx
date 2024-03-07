@@ -1,11 +1,11 @@
 import './App.css';
-import Debounce from './component/Debounce';
+import Accordian from './component/Accordian';
 function App() {
 
 
   return (
       <div className="App">
-        <Debounce />
+        <Accordian />
       </div>
   );
 }
