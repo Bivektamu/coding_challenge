@@ -30,20 +30,6 @@ const SuggestedSkills = ({ selectedSkills, lastSelected, lastDeselected, updateS
 // eslint-disable-next-line
     }, [updateSuggestedList])
 // 
-//     useEffect(() => {
-//         if (lastDeselected && lastDeselected !== '') {
-//             const index = INITIAL_SKILLS.indexOf(lastDeselected)
-//             if (index > -1) {
-//                 setClicked([...clicked.slice(0, index), false, ...clicked.slice(index + 1)])
-//             }
-// 
-//             setUpdateSuggestedList('')
-//         }
-// 
-// 
-//     }, [lastDeselected])
-
-
     useEffect(() => {
         if (selectedSkills.length > 0) {
             const temp = suggestedSkills.map(({ skill }) => {
@@ -72,8 +58,6 @@ const SuggestedSkills = ({ selectedSkills, lastSelected, lastDeselected, updateS
         if(selectedSkills.length < 5 || s.isActive)
         updateSelectedSkills(s.skill, s.isActive)
     }
-
-
 
     return (
         <div className="SuggestedSkills w-[133px] h-[234px] relative">

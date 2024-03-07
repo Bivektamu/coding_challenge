@@ -8,6 +8,11 @@ const SearchBox = ({ updateSelectedSkills, updateSuggestedList, getSelectedSkill
     const [autoCompleteList, setAutoCompleteList] = useState([])
     const [autoComplete, setAutoComplete] = useState(false)
     const [allSkills, setAllSkills] = useState(SKILLS)
+
+    const [isHold, setIsHold] = useState({active:false, index:null})
+    const [cords, setCords] = useState(null)
+
+
     const inputRef = useRef()
 
 
@@ -21,7 +26,7 @@ const SearchBox = ({ updateSelectedSkills, updateSuggestedList, getSelectedSkill
 
     useEffect(() => {
         if (updateSelectedSkills) {
-            const {skill, isActive} = updateSelectedSkills
+            const { skill, isActive } = updateSelectedSkills
             if (isActive) {
                 deleteSkill(skill)
             }
@@ -61,6 +66,7 @@ const SearchBox = ({ updateSelectedSkills, updateSuggestedList, getSelectedSkill
         // eslint-disable-next-line
     }, [autoComplete, value])
 
+
     const onClick = (s) => {
         setSelectedSkills([...selectedSkills, s])
         setValue('')
@@ -87,10 +93,25 @@ const SearchBox = ({ updateSelectedSkills, updateSuggestedList, getSelectedSkill
         }
     }
 
+    const mouseMove = e => {
+        if (!isHold.active || e.target.classList.value.indexOf('skill') === -1) {
+            return
+        }
+        setCords((prev)=>({...prev, x: e.clientX - isHold.diff.x, y: e.clientY - isHold.diff.y}))
+    }
+
+    const mouseOut = () => {
+    setIsHold({active: false, index:null})
+        // console.log('asdf')
+    }
+// 
+//     useEffect(()=>{
+//         console.log(cords)
+//     }, [cords])
 
     return (
-        <div className="Skills flex-col justify-center items-center gap-[18px] inline-flex">
-            {selectedSkills.length > 0 && selectedSkills.map((s, i) => <Skill key={i} skill={s} index={i} onClickHandler={() => deleteSkill(s)} />)}
+        <div className="skills flex-col justify-center items-center gap-[18px] inline-flex" onMouseMove={mouseMove} onMouseLeave={mouseOut}>
+            {selectedSkills.length > 0 && selectedSkills.map((s, i) => <Skill key={i} skill={s} index={i} isHold={isHold} setIsHold={setIsHold} setCords={setCords} cords={cords} onClickHandler={() => deleteSkill(s)} />)}
             {selectedSkills.length < 5 && (
                 <div className={`FaqFour w-[392px] h-[59px] p-4  rounded-lg border border-slate-200 justify-between items-center inline-flex relative bg-gray-50`}>
                     <input className={`AddSkill text-slate-500 outline-none w-full bg-transparent  text-lg font-normal capitalize font-['Poppins'] `} placeholder={`${selectedSkills.length + 1}. Add Skill`} value={value} onChange={e => setValue(e.target.value)} onFocus={() => setAutoComplete(true)} ref={inputRef} />
