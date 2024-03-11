@@ -1,15 +1,10 @@
 import { useEffect } from 'react';
 import './App.css';
-import { useTaskContext } from './context';
-import Kanban from './component/Kanban';
+import PasswordGenerator from './component/PasswordGenerator';
 function App() {
-  const [state, dispatch] = useTaskContext()
-  useEffect(() => {
-      dispatch({type: 'GET'})
-  }, [])
   return (
       <div className="App">
-        <Kanban />
+        <PasswordGenerator />
       </div>
   );
 }
