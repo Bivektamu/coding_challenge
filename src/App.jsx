@@ -1,10 +1,10 @@
 import './App.css';
-import Toast from './component/Toast';
+import TextAnalyzer from './component/TextAnalyzer';
 
 function App() {
   return (
     <div className="App">
-      <Toast />
+      <TextAnalyzer />
     </div>
   );
 }
