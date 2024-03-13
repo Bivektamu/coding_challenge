@@ -1,15 +1,12 @@
 import { useEffect } from 'react';
 import './App.css';
 import { useTaskContext } from './context';
-import Kanban from './component/Kanban';
+import {Stars} from './component';
 function App() {
-  const [state, dispatch] = useTaskContext()
-  useEffect(() => {
-      dispatch({type: 'GET'})
-  }, [])
+ 
   return (
       <div className="App">
-        <Kanban />
+        <Stars />
       </div>
   );
 }
