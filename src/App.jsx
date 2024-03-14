@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import './App.css';
-import MemoryGame from './component/MemoryGame';
+import Draggable from './component/Draggable';
 function App() {
   return (
       <div className="App">
-        <MemoryGame />
+        <Draggable />
       </div>
   );
 }
