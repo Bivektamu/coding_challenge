@@ -1,0 +1,11 @@
+.card {
+    backface-visibility: hidden;
+    transition: all 1s ease;
+}
+.flipped {
+    transform: rotateY(180deg);
+    
+}
+.back {
+    transform: rotateY(180deg);
+}

@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import './App.css';
-import PasswordGenerator from './component/PasswordGenerator';
+import MemoryGame from './component/MemoryGame';
 function App() {
   return (
       <div className="App">
-        <PasswordGenerator />
+        <MemoryGame />
       </div>
   );
 }
