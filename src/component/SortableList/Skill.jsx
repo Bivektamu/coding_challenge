@@ -1,42 +1,52 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 
-const Skill = ({ skill, index, onClickHandler, setIsHold, isHold, setCords, cords }) => {
-
-  const timer = useRef(null)
+const Skill = ({ skill, index, onClickHandler, selectedSkills, setSelectedSkills, dnd, setDnd }) => {
 
 
-  const mouseDown = (e) => {
-    console.log('clicked')
-    if (timer.current) {
-      clearTimeout(timer.current)
+
+
+  useEffect(() => {
+    const { dragged, dropped, isDragged } = dnd
+    if (dragged && dropped) {
+      const updateSkills = [...selectedSkills]
+      const temp = updateSkills[dragged]
+      updateSkills[dragged] = updateSkills[dropped]
+      updateSkills[dropped] = temp
+      setSelectedSkills([...updateSkills])
     }
-    // setIsHold({active: true, index})
-    console.log(e.target.getBoundingClientRect().left)
-    setCords({ x: e.target.getBoundingClientRect().left, y: e.target.getBoundingClientRect().top })
-    timer.current = setTimeout(() => setIsHold({ active: true, index, diff: { x: e.clientX - e.target.getBoundingClientRect().left, y: e.clientY - e.target.getBoundingClientRect().top } }), 100)
+  }, [dnd])
 
-  }
-  const mouseUp = (e) => {
-
-    // clearTimeout(timer.current)
-    timer.current = clearTimeout(timer.current)
-    setIsHold({ active: false, index: null, diff: {} })
+  const dragInit = (e, index) => {
+    e.stopPropagation()
+    setDnd({ dragged: index.toString(), dropped: null, isDragged: true })
+  
   }
 
-  // useEffect(()=> {
-  //   console.log(cords)
-  // }, [cords])
+  const droppedHandler = (e, index) => {
+    e.stopPropagation()
+
+    setDnd(prev => ({ ...prev, dropped: index.toString(), isDragged: false }))
+    // setDnd(prev => ({ ...prev, dragged: e.dataTransfer.getData('dragged'), dropped: index.toString() }))
+  }
+
+  const over = e => {
+    e.stopPropagation()
+    e.preventDefault()
+  }
+
+  const end = e => {
+    e.stopPropagation()
+    if(dnd.isDragged) {
+      setDnd(prev => ({ ...prev, isDragged: false }))
+    }
+  }
 
   return (
-    <>
-      <div data-index={index} className={`skill w-[392px] h-[59px] p-4  rounded-lg border border-slate-200 justify-between items-center inline-flex  bg-blue-950 ${isHold && isHold.index === index ? 'fixed z-10' : 'relative'}`} onMouseDown={mouseDown} onMouseUp={mouseUp} style={isHold.index === index && cords && cords.x ? { left: `${cords.x}px`, top: `${cords.y}px` } : { left: 'auto', top: 'auto' }}>
-        <span className="AddSkill w-full text-left pointer-events-none text-white outline-none bg-transparent  text-lg font-normal font-['Poppins']">{index + 1}. {skill}</span>
-        <span className="Plus w-5 h-5 absolute text-white top-2 right-4 text-2xl cursor-pointer" onClick={() => onClickHandler(index)}>x</span>
-      </div>
-      {isHold.index === index &&
-        <div className="fakeSkill w-[392px] h-[59px] p-4  rounded-lg border-dashed border  border-slate-200 justify-between items-center inline-flex relative"></div>
-      }
-    </>
+    <div data-index={index} className={`skill  w-[392px] h-[59px] p-4  rounded-lg border border-slate-200 justify-between items-center inline-flex  bg-blue-950 relative `} draggable onDrop={e => droppedHandler(e, index)} onDragOver={(e) => over(e)} onDragStart={e => dragInit(e, index)} onDragEnd={end}>
+      <span className="AddSkill w-full text-left  text-white outline-none bg-transparent  text-lg font-normal font-['Poppins']">{index + 1}. {skill}</span>
+      <span className="Plus w-5 h-5 absolute text-white top-2 right-4 text-2xl cursor-pointer" onClick={() => onClickHandler(index)}>x</span>
+    </div>
+
   )
 }
 
