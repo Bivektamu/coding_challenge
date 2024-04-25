@@ -1,10 +1,10 @@
 import './App.css';
-import MultiForm from './component/MultiForm/MultiForm';
+import TodoListHoc from './component/TodoListHoc.tsx';
 
 function App() {
   return (
     <div className="App">
-      <MultiForm />
+      <TodoListHoc />
     </div>
   );
 }
