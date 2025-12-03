@@ -1,16 +1,14 @@
-import { useEffect } from 'react';
+import { lazy, Suspense } from 'react';
 import './App.css';
-import { useTaskContext } from './context';
-import Kanban from './component/Kanban';
+import User from './component/User';
+import Loading from  './component/Loading'
 function App() {
-  const [state, dispatch] = useTaskContext()
-  useEffect(() => {
-      dispatch({type: 'GET'})
-  }, [])
   return (
-      <div className="App">
-        <Kanban />
-      </div>
+    <div className="App">
+      <Suspense fallback={<Loading />}>
+        <User />
+      </Suspense>
+    </div>
   );
 }
 
